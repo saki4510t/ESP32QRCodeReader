@@ -6,11 +6,11 @@
 #include "esp_camera.h"
 
 #ifndef QR_CODE_READER_STACK_SIZE
-#define QR_CODE_READER_STACK_SIZE 40 * 1024
+#define QR_CODE_READER_STACK_SIZE (40 * 1024)
 #endif
 
 #ifndef QR_CODE_READER_TASK_PRIORITY
-#define QR_CODE_READER_TASK_PRIORITY 5
+#define QR_CODE_READER_TASK_PRIORITY (5)
 #endif
 
 enum QRCodeReaderSetupErr

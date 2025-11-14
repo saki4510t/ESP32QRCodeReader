@@ -19,18 +19,18 @@
 
 #include "quirc.h"
 
-#define QUIRC_PIXEL_WHITE 0
-#define QUIRC_PIXEL_BLACK 1
-#define QUIRC_PIXEL_REGION 2
+#define QUIRC_PIXEL_WHITE (0)
+#define QUIRC_PIXEL_BLACK (1)
+#define QUIRC_PIXEL_REGION (2)
 
 #ifndef QUIRC_MAX_REGIONS
-#define QUIRC_MAX_REGIONS 254
+#define QUIRC_MAX_REGIONS (254)
 #endif
 
-#define QUIRC_MAX_CAPSTONES 32
-#define QUIRC_MAX_GRIDS 8
+#define QUIRC_MAX_CAPSTONES (32)
+#define QUIRC_MAX_GRIDS (8)
 
-#define QUIRC_PERSPECTIVE_PARAMS 8
+#define QUIRC_PERSPECTIVE_PARAMS (8)
 
 #if QUIRC_MAX_REGIONS < UINT8_MAX
 typedef uint8_t quirc_pixel_t;
@@ -99,8 +99,8 @@ struct quirc
  * QR-code version information database
  */
 
-#define QUIRC_MAX_VERSION 40
-#define QUIRC_MAX_ALIGNMENT 7
+#define QUIRC_MAX_VERSION (40)
+#define QUIRC_MAX_ALIGNMENT (7)
 
 struct quirc_rs_params
 {
