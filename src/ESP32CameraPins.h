@@ -161,6 +161,36 @@ struct CameraPins
     .PCLK_GPIO_NUM = 45,        \
   }
 
+  /**
+   * M5Stack ATOM S3RCAM also requires to make GPIO 18 low
+   * before calling ESP32QRCodeReader::setup with 500ms delay.
+   * ```
+   * #define POWER_GPIO_NUM 18
+   * pinMode(POWER_GPIO_NUM, OUTPUT);
+   * digitalWrite(POWER_GPIO_NUM, LOW);
+   * delay(500);
+   * ```
+   */
+  #define CAMERA_MODEL_M5STACK_ATOM_S3RCAM \
+  {                             \
+    .PWDN_GPIO_NUM = -1,        \
+    .RESET_GPIO_NUM = -1,       \
+    .XCLK_GPIO_NUM = 21,        \
+    .SIOD_GPIO_NUM = 12,        \
+    .SIOC_GPIO_NUM = 9,        \
+    .Y9_GPIO_NUM = 13,          \
+    .Y8_GPIO_NUM = 11,          \
+    .Y7_GPIO_NUM = 17,          \
+    .Y6_GPIO_NUM = 4,          \
+    .Y5_GPIO_NUM = 48,          \
+    .Y4_GPIO_NUM = 46,          \
+    .Y3_GPIO_NUM = 42,           \
+    .Y2_GPIO_NUM = 3,           \
+    .VSYNC_GPIO_NUM = 10,       \
+    .HREF_GPIO_NUM = 14,        \
+    .PCLK_GPIO_NUM = 40,        \
+  }
+
   #define CAMERA_MODEL_AI_THINKER \
   {                             \
     .PWDN_GPIO_NUM = 32,        \
