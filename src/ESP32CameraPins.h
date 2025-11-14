@@ -141,7 +141,27 @@ struct CameraPins
     .PCLK_GPIO_NUM = 21,              \
   }
 
-#define CAMERA_MODEL_AI_THINKER \
+#define CAMERA_MODEL_M5STACK_CORES3 \
+  {                             \
+    .PWDN_GPIO_NUM = -1,        \
+    .RESET_GPIO_NUM = -1,       \
+    .XCLK_GPIO_NUM = -1,        \
+    .SIOD_GPIO_NUM = 12,        \
+    .SIOC_GPIO_NUM = 11,        \
+    .Y9_GPIO_NUM = 47,          \
+    .Y8_GPIO_NUM = 48,          \
+    .Y7_GPIO_NUM = 16,          \
+    .Y6_GPIO_NUM = 15,          \
+    .Y5_GPIO_NUM = 42,          \
+    .Y4_GPIO_NUM = 41,          \
+    .Y3_GPIO_NUM = 40,           \
+    .Y2_GPIO_NUM = 39,           \
+    .VSYNC_GPIO_NUM = 46,       \
+    .HREF_GPIO_NUM = 38,        \
+    .PCLK_GPIO_NUM = 45,        \
+  }
+
+  #define CAMERA_MODEL_AI_THINKER \
   {                             \
     .PWDN_GPIO_NUM = 32,        \
     .RESET_GPIO_NUM = -1,       \
