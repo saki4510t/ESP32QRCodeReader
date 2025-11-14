@@ -7,15 +7,15 @@ ESP32QRCodeReader::ESP32QRCodeReader() : ESP32QRCodeReader(CAMERA_MODEL_AI_THINK
 {
 }
 
-ESP32QRCodeReader::ESP32QRCodeReader(framesize_t frameSize) : ESP32QRCodeReader(CAMERA_MODEL_AI_THINKER, frameSize)
+ESP32QRCodeReader::ESP32QRCodeReader(const framesize_t &frameSize) : ESP32QRCodeReader(CAMERA_MODEL_AI_THINKER, frameSize)
 {
 }
 
-ESP32QRCodeReader::ESP32QRCodeReader(CameraPins pins) : ESP32QRCodeReader(pins, FRAMESIZE_QVGA)
+ESP32QRCodeReader::ESP32QRCodeReader(const CameraPins &pins) : ESP32QRCodeReader(pins, FRAMESIZE_QVGA)
 {
 }
 
-ESP32QRCodeReader::ESP32QRCodeReader(CameraPins pins, framesize_t frameSize) : pins(pins), frameSize(frameSize)
+ESP32QRCodeReader::ESP32QRCodeReader(const CameraPins &pins, const framesize_t &frameSize) : pins(pins), frameSize(frameSize)
 {
   qrCodeQueue = xQueueCreate(10, sizeof(struct QRCodeData));
 }
@@ -256,7 +256,7 @@ void ESP32QRCodeReader::begin()
   beginOnCore(0);
 }
 
-void ESP32QRCodeReader::beginOnCore(BaseType_t core)
+void ESP32QRCodeReader::beginOnCore(const BaseType_t &core)
 {
   if (!begun)
   {
@@ -265,7 +265,7 @@ void ESP32QRCodeReader::beginOnCore(BaseType_t core)
   }
 }
 
-bool ESP32QRCodeReader::receiveQrCode(struct QRCodeData *qrCodeData, long timeoutMs)
+bool ESP32QRCodeReader::receiveQrCode(struct QRCodeData *qrCodeData, const long &timeoutMs)
 {
   return xQueueReceive(qrCodeQueue, qrCodeData, (TickType_t)pdMS_TO_TICKS(timeoutMs)) != 0;
 }
@@ -284,7 +284,7 @@ void ESP32QRCodeReader::end()
   begun = false;
 }
 
-void ESP32QRCodeReader::setDebug(bool on)
+void ESP32QRCodeReader::setDebug(const bool &on)
 {
   debug = on;
 }

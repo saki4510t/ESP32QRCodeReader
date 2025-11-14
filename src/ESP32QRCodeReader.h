@@ -44,20 +44,20 @@ public:
 
   // Constructor
   ESP32QRCodeReader();
-  ESP32QRCodeReader(CameraPins pins);
-  ESP32QRCodeReader(CameraPins pins, framesize_t frameSize);
-  ESP32QRCodeReader(framesize_t frameSize);
+  ESP32QRCodeReader(const CameraPins &pins);
+  ESP32QRCodeReader(const CameraPins &pins, const framesize_t &frameSize);
+  ESP32QRCodeReader(const framesize_t &frameSize);
   ~ESP32QRCodeReader();
 
   // Setup camera
   QRCodeReaderSetupErr setup();
 
   void begin();
-  void beginOnCore(BaseType_t core);
-  bool receiveQrCode(struct QRCodeData *qrCodeData, long timeoutMs);
+  void beginOnCore(const BaseType_t &core);
+  bool receiveQrCode(struct QRCodeData *qrCodeData, const long &timeoutMs);
   void end();
 
-  void setDebug(bool);
+  void setDebug(const bool &);
 };
 
 #endif // ESP32_QR_CODE_ARDUINO_H_
