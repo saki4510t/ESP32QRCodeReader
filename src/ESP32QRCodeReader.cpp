@@ -3,19 +3,32 @@
 #include "quirc/quirc.h"
 #include "Arduino.h"
 
-ESP32QRCodeReader::ESP32QRCodeReader() : ESP32QRCodeReader(CAMERA_MODEL_AI_THINKER, FRAMESIZE_QVGA)
+ESP32QRCodeReader::ESP32QRCodeReader()
+: ESP32QRCodeReader(CAMERA_MODEL_AI_THINKER, FRAMESIZE_QVGA, nullptr, nullptr)
 {
 }
 
-ESP32QRCodeReader::ESP32QRCodeReader(const framesize_t &frameSize) : ESP32QRCodeReader(CAMERA_MODEL_AI_THINKER, frameSize)
+ESP32QRCodeReader::ESP32QRCodeReader(const framesize_t &frameSize)
+: ESP32QRCodeReader(CAMERA_MODEL_AI_THINKER, frameSize, nullptr, nullptr)
 {
 }
 
-ESP32QRCodeReader::ESP32QRCodeReader(const CameraPins &pins) : ESP32QRCodeReader(pins, FRAMESIZE_QVGA)
+ESP32QRCodeReader::ESP32QRCodeReader(const CameraPins &pins)
+: ESP32QRCodeReader(pins, FRAMESIZE_QVGA, nullptr, nullptr)
 {
 }
 
-ESP32QRCodeReader::ESP32QRCodeReader(const CameraPins &pins, const framesize_t &frameSize) : pins(pins), frameSize(frameSize)
+ESP32QRCodeReader::ESP32QRCodeReader(const CameraPins &pins, const framesize_t &frameSize)
+: ESP32QRCodeReader(pins, frameSize, nullptr, nullptr)
+{
+}
+
+ESP32QRCodeReader::ESP32QRCodeReader(
+  const CameraPins &pins, const framesize_t &frameSize,
+  on_camera_init_t init_cb, on_frame_t frame_cb
+)
+: pins(pins), frameSize(frameSize),
+  on_camera_init_cb(init_cb), on_frame_cb(frame_cb)
 {
   qrCodeQueue = xQueueCreate(10, sizeof(struct QRCodeData));
 }
@@ -63,6 +76,10 @@ QRCodeReaderSetupErr ESP32QRCodeReader::setup()
   pinMode(14, INPUT_PULLUP);
 #endif
 
+  if (on_camera_init_cb)
+  {
+    on_camera_init_cb(cameraConfig);
+  }
   // camera init
   esp_err_t err = esp_camera_init(&cameraConfig);
   if (err != ESP_OK)
@@ -162,6 +179,11 @@ void qrCodeDetectTask(void *taskData)
         old_width = fb->width;
         old_height = fb->height;
       }
+    }
+
+    if (self->on_frame_cb)
+    {
+      self->on_frame_cb(fb);
     }
 
     // Serial.printf("quirc_begin\r\n");

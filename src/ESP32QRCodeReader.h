@@ -13,6 +13,16 @@
 #define QR_CODE_READER_TASK_PRIORITY (5)
 #endif
 
+/**
+ * callback function to setup extra camera configs before calling #esp_camera_init
+ */
+typedef int (*on_camera_init_t)(camera_config_t &config);
+/**
+ * callback function for every camera frame.
+ * should return as fast as possible and should not call #esp_camera_fb_return.
+ */
+typedef int (*on_frame_t)(camera_fb_t *fb);
+
 enum QRCodeReaderSetupErr
 {
   SETUP_OK,
@@ -35,10 +45,11 @@ private:
   TaskHandle_t qrCodeTaskHandler;
   CameraPins pins;
   framesize_t frameSize;
-
+  on_camera_init_t on_camera_init_cb;
 public:
   camera_config_t cameraConfig;
   QueueHandle_t qrCodeQueue;
+  on_frame_t on_frame_cb;
   bool begun = false;
   bool debug = false;
 
@@ -47,6 +58,10 @@ public:
   ESP32QRCodeReader(const CameraPins &pins);
   ESP32QRCodeReader(const CameraPins &pins, const framesize_t &frameSize);
   ESP32QRCodeReader(const framesize_t &frameSize);
+  ESP32QRCodeReader(
+    const CameraPins &pins, const framesize_t &frameSize,
+    on_camera_init_t init_cb, on_frame_t frame_cb
+  );
   ~ESP32QRCodeReader();
 
   // Setup camera
