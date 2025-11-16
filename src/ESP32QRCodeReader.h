@@ -45,14 +45,16 @@ private:
   TaskHandle_t qrCodeTaskHandler;
   CameraPins pins;
   framesize_t frameSize;
-  on_camera_init_t on_camera_init_cb;
-public:
   camera_config_t cameraConfig;
   QueueHandle_t qrCodeQueue;
   on_frame_t on_frame_cb;
   bool begun = false;
   bool debug = false;
+  on_camera_init_t on_camera_init_cb;
 
+  static void qrCodeDetectTask(void *taskData);
+  void qrCodeDetectTaskFunc();
+public:
   // Constructor
   ESP32QRCodeReader();
   ESP32QRCodeReader(const CameraPins &pins);

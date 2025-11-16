@@ -93,13 +93,21 @@ void dumpData(const struct quirc_data *data)
   Serial.printf("Payload: %s\n", data->payload);
 }
 
-void qrCodeDetectTask(void *taskData)
+/*private,static*/
+void ESP32QRCodeReader::qrCodeDetectTask(void *taskData) {
+  auto self = (ESP32QRCodeReader *)taskData;
+  if (self) {
+    self->qrCodeDetectTaskFunc();
+  }
+}
+
+/*private*/
+void ESP32QRCodeReader::qrCodeDetectTaskFunc()
 {
-  ESP32QRCodeReader *self = (ESP32QRCodeReader *)taskData;
-  camera_config_t camera_config = self->cameraConfig;
+  camera_config_t camera_config = cameraConfig;
   if (camera_config.frame_size > FRAMESIZE_SVGA)
   {
-    if (self->debug)
+    if (debug)
     {
       Serial.println("Camera Size err");
     }
@@ -114,14 +122,14 @@ void qrCodeDetectTask(void *taskData)
   uint16_t old_width = 0;
   uint16_t old_height = 0;
 
-  if (self->debug)
+  if (debug)
   {
     Serial.printf("begin to qr_recoginze\r\n");
   }
   q = quirc_new();
   if (q == NULL)
   {
-    if (self->debug)
+    if (debug)
     {
       Serial.print("can't create quirc object\r\n");
     }
@@ -132,7 +140,7 @@ void qrCodeDetectTask(void *taskData)
   while (true)
   {
 
-    if (self->debug)
+    if (debug)
     {
       Serial.printf("alloc qr heap: %u\r\n", xPortGetFreeHeapSize());
       Serial.printf("uxHighWaterMark = %d\r\n", uxTaskGetStackHighWaterMark(NULL));
@@ -143,7 +151,7 @@ void qrCodeDetectTask(void *taskData)
     fb = esp_camera_fb_get();
     if (!fb)
     {
-      if (self->debug)
+      if (debug)
       {
         Serial.println("Camera capture failed");
       }
@@ -152,7 +160,7 @@ void qrCodeDetectTask(void *taskData)
 
     if (old_width != fb->width || old_height != fb->height)
     {
-      if (self->debug)
+      if (debug)
       {
         Serial.printf("Recognizer size change w h len: %d, %d, %d \r\n", fb->width, fb->height, fb->len);
         Serial.println("Resize the QR-code recognizer.");
@@ -160,7 +168,7 @@ void qrCodeDetectTask(void *taskData)
       }
       if (quirc_resize(q, fb->width, fb->height) < 0)
       {
-        if (self->debug)
+        if (debug)
         {
           Serial.println("Resize the QR-code recognizer err (cannot allocate memory).");
         }
@@ -176,28 +184,28 @@ void qrCodeDetectTask(void *taskData)
       }
     }
 
-    if (self->on_frame_cb)
+    if (on_frame_cb)
     {
-      self->on_frame_cb(fb);
+      on_frame_cb(fb);
     }
 
     // Serial.printf("quirc_begin\r\n");
     image = quirc_begin(q, NULL, NULL);
-    if (self->debug)
+    if (debug)
     {
       Serial.printf("Frame w h len: %d, %d, %d \r\n", fb->width, fb->height, fb->len);
     }
     memcpy(image, fb->buf, fb->len);
     quirc_end(q);
 
-    if (self->debug)
+    if (debug)
     {
       Serial.printf("quirc_end\r\n");
     }
     int count = quirc_count(q);
     if (count == 0)
     {
-      if (self->debug)
+      if (debug)
       {
         Serial.printf("Error: not a valid qrcode\n");
       }
@@ -222,7 +230,7 @@ void qrCodeDetectTask(void *taskData)
       {
         const char *error = quirc_strerror(err);
         int len = strlen(error);
-        if (self->debug)
+        if (debug)
         {
           Serial.printf("Decoding FAILED: %s\n", error);
         }
@@ -236,7 +244,7 @@ void qrCodeDetectTask(void *taskData)
       }
       else
       {
-        if (self->debug)
+        if (debug)
         {
           Serial.printf("Decoding successful:\n");
           dumpData(&data);
@@ -251,9 +259,9 @@ void qrCodeDetectTask(void *taskData)
         qrCodeData.payload[data.payload_len] = '\0';
         qrCodeData.payloadLen = data.payload_len;
       }
-      xQueueSend(self->qrCodeQueue, &qrCodeData, (TickType_t)0);
+      xQueueSend(qrCodeQueue, &qrCodeData, (TickType_t)0);
 
-      if (self->debug)
+      if (debug)
       {
         Serial.println();
       }
@@ -265,7 +273,7 @@ void qrCodeDetectTask(void *taskData)
     image = NULL;
   }
 
-  if (self->debug)
+  if (debug)
   {
     Serial.println("decode task finsihed");
   }
