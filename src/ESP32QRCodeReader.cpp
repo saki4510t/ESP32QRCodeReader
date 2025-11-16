@@ -264,6 +264,12 @@ void qrCodeDetectTask(void *taskData)
     fb = NULL;
     image = NULL;
   }
+
+  if (self->debug)
+  {
+    Serial.println("decode task finsihed");
+  }
+
   quirc_destroy(q);
   vTaskDelete(NULL);
 }
