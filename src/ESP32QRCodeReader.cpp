@@ -71,11 +71,6 @@ QRCodeReaderSetupErr ESP32QRCodeReader::setup()
   cameraConfig.jpeg_quality = 15;
   cameraConfig.fb_count = 1;
 
-#if defined(CAMERA_MODEL_ESP_EYE)
-  pinMode(13, INPUT_PULLUP);
-  pinMode(14, INPUT_PULLUP);
-#endif
-
   if (on_camera_init_cb)
   {
     on_camera_init_cb(cameraConfig);
